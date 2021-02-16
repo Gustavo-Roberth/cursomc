@@ -8,8 +8,12 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import com.gustavo.cursomc.domain.Categoria;
+import com.gustavo.cursomc.domain.Cidade;
+import com.gustavo.cursomc.domain.Estado;
 import com.gustavo.cursomc.domain.Produto;
 import com.gustavo.cursomc.repositories.CategoriaRepository;
+import com.gustavo.cursomc.repositories.CidadeRepository;
+import com.gustavo.cursomc.repositories.EstadoRepository;
 import com.gustavo.cursomc.repositories.ProdutoRepository;
 
 @SpringBootApplication
@@ -18,6 +22,10 @@ public class CursomcApplication implements CommandLineRunner{
 	public CategoriaRepository categoriaRepository;
 	@Autowired
 	public ProdutoRepository produtoRepository;
+	@Autowired
+	public EstadoRepository estadoRepository;
+	@Autowired
+	public CidadeRepository cidadeRepository;
 
 	public static void main(String[] args) {
 		SpringApplication.run(CursomcApplication.class, args);
@@ -40,5 +48,25 @@ public class CursomcApplication implements CommandLineRunner{
 
 		categoriaRepository.saveAll(Arrays.asList(cat1, cat2));
 		produtoRepository.saveAll(Arrays.asList(prod1, prod2, prod3));
+		
+		Estado est1 = new Estado (null, "Minas Gerais");
+		Estado est2 = new Estado (null, "São Paulo");
+		
+		Cidade cid1 = new Cidade (null, "Belo Horizonte", est1);
+		Cidade cid2 = new Cidade (null, "Ouro Preto", est1);
+		Cidade cid3 = new Cidade (null, "São Paulo", est2);
+		Cidade cid4 = new Cidade (null, "Cubatão", est2);
+		Cidade cid5 = new Cidade (null, "Osasco", est2);
+		Cidade cid6 = new Cidade (null, "Ribeirão Preto", est2);
+		Cidade cid7 = new Cidade (null, "Uberlândia", est1);
+		Cidade cid8 = new Cidade (null, "Juíz de Fora", est1);
+		Cidade cid9 = new Cidade (null, "Bauru", est2);
+		Cidade cid10 = new Cidade (null, "Piracicaba", est2);
+		
+		est1.getCidades().addAll(Arrays.asList(cid1, cid2, cid7, cid8));
+		est1.getCidades().addAll(Arrays.asList(cid3, cid4, cid5, cid6, cid9, cid10));
+		
+		estadoRepository.saveAll(Arrays.asList(est1, est2));
+		cidadeRepository.saveAll(Arrays.asList(cid1, cid2, cid3, cid4, cid5, cid6, cid7, cid8, cid9, cid10));
 	}
 }
