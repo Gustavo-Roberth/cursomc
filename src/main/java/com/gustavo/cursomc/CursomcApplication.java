@@ -1,5 +1,6 @@
 package com.gustavo.cursomc;
 
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,13 +13,20 @@ import com.gustavo.cursomc.domain.Cidade;
 import com.gustavo.cursomc.domain.Cliente;
 import com.gustavo.cursomc.domain.Endereco;
 import com.gustavo.cursomc.domain.Estado;
+import com.gustavo.cursomc.domain.Pagamento;
+import com.gustavo.cursomc.domain.PagamentoComBoleto;
+import com.gustavo.cursomc.domain.PagamentoComCartao;
+import com.gustavo.cursomc.domain.Pedido;
 import com.gustavo.cursomc.domain.Produto;
+import com.gustavo.cursomc.domain.enums.EstadoPagamento;
 import com.gustavo.cursomc.domain.enums.TipoCliente;
 import com.gustavo.cursomc.repositories.CategoriaRepository;
 import com.gustavo.cursomc.repositories.CidadeRepository;
 import com.gustavo.cursomc.repositories.ClienteRepository;
 import com.gustavo.cursomc.repositories.EnderecoRepository;
 import com.gustavo.cursomc.repositories.EstadoRepository;
+import com.gustavo.cursomc.repositories.PagamentoRepository;
+import com.gustavo.cursomc.repositories.PedidoRepository;
 import com.gustavo.cursomc.repositories.ProdutoRepository;
 
 @SpringBootApplication
@@ -35,6 +43,11 @@ public class CursomcApplication implements CommandLineRunner{
 	public ClienteRepository clienteRepository;
 	@Autowired
 	public EnderecoRepository enderecoRepository;
+	@Autowired
+	public PedidoRepository pedidoRepository;
+	@Autowired
+	public PagamentoRepository pagamentoRepository;
+
 
 	public static void main(String[] args) {
 		SpringApplication.run(CursomcApplication.class, args);
@@ -112,6 +125,51 @@ public class CursomcApplication implements CommandLineRunner{
 		
 		clienteRepository.saveAll(Arrays.asList(cli1, cli2, cli3, cli4, cli5, cli6));
 		enderecoRepository.saveAll(Arrays.asList(end1, end2, end3, end4, end5, end6, end7, end8, end9, end10));
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm");
+		
+		Pedido ped1 = new Pedido (null, sdf.parse("10/02/2021 10:32"), cli1, end1);
+		Pedido ped2 = new Pedido (null, sdf.parse("10/02/2021 10:34"), cli2, end2);
+		Pedido ped3 = new Pedido (null, sdf.parse("10/02/2021 10:36"), cli3, end3);
+		Pedido ped4 = new Pedido (null, sdf.parse("10/02/2021 10:37"), cli4, end4);
+		Pedido ped5 = new Pedido (null, sdf.parse("10/02/2021 10:37"), cli5, end5);
+		Pedido ped6 = new Pedido (null, sdf.parse("10/02/2021 10:40"), cli6, end6);
+		Pedido ped7 = new Pedido (null, sdf.parse("10/02/2021 10:41"), cli1, end7);
+		Pedido ped8 = new Pedido (null, sdf.parse("10/02/2021 10:44"), cli3, end8);
+		Pedido ped9 = new Pedido (null, sdf.parse("10/02/2021 10:45"), cli5, end9);
+		Pedido ped10 = new Pedido (null, sdf.parse("10/02/2021 10:50"), cli6, end10);
+		
+		Pagamento pag1 = new PagamentoComCartao (null, EstadoPagamento.QUITADO, ped1, 6);
+		Pagamento pag2 = new PagamentoComBoleto (null, EstadoPagamento.CANCELADO, ped2, ped2.getInstante(), ped2.getInstante());
+		Pagamento pag3 = new PagamentoComBoleto (null, EstadoPagamento.PENDENTE, ped3, ped2.getInstante(), ped2.getInstante());
+		Pagamento pag4 = new PagamentoComCartao (null, EstadoPagamento.QUITADO, ped4, 6);
+		Pagamento pag5 = new PagamentoComBoleto (null, EstadoPagamento.PENDENTE, ped5, ped2.getInstante(), ped2.getInstante());
+		Pagamento pag6 = new PagamentoComCartao (null, EstadoPagamento.QUITADO, ped6, 6);
+		Pagamento pag7 = new PagamentoComBoleto (null, EstadoPagamento.QUITADO, ped7, ped2.getInstante(), ped2.getInstante());
+		Pagamento pag8 = new PagamentoComCartao (null, EstadoPagamento.QUITADO, ped8, 6);
+		Pagamento pag9 = new PagamentoComBoleto (null, EstadoPagamento.CANCELADO, ped9, ped2.getInstante(), ped2.getInstante());
+		Pagamento pag10 = new PagamentoComCartao (null, EstadoPagamento.QUITADO, ped10, 6);
+		
+		ped1.setPagamento(pag1);
+		ped2.setPagamento(pag2);
+		ped3.setPagamento(pag3);
+		ped4.setPagamento(pag4);
+		ped5.setPagamento(pag5);
+		ped6.setPagamento(pag6);
+		ped7.setPagamento(pag7);
+		ped8.setPagamento(pag8);
+		ped9.setPagamento(pag9);
+		ped10.setPagamento(pag10);
+		
+		cli1.getPedidos().addAll(Arrays.asList(ped1, ped7));
+		cli2.getPedidos().addAll(Arrays.asList(ped2));
+		cli3.getPedidos().addAll(Arrays.asList(ped3, ped8));
+		cli4.getPedidos().addAll(Arrays.asList(ped4));
+		cli5.getPedidos().addAll(Arrays.asList(ped5, ped9));
+		cli6.getPedidos().addAll(Arrays.asList(ped6, ped10));
+		
+		pedidoRepository.saveAll(Arrays.asList(ped1, ped2, ped3, ped4, ped5, ped6, ped7, ped8, ped9, ped10));
+		pagamentoRepository.saveAll(Arrays.asList(pag1, pag2, pag3, pag4, pag5, pag6, pag7, pag8, pag9, pag10));
 		
 	}
 }
